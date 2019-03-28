@@ -61,39 +61,10 @@ public class RotationInterpolation : MonoBehaviour
         /// #2                                                      ///
         /// Implement conversion from rotation matrix to quaternion ///
         ///////////////////////////////////////////////////////////////
-        
-        if (R.m00 + R.m11 + R.m22 > 0)
-        {
-            q.w = Mathf.Sqrt(1 + R.m00 + R.m11 + R.m22) / 2;
-            q.x = (R.m21 - R.m12) / (4 * q.w);
-            q.y = (R.m02 - R.m20) / (4 * q.w);
-            q.z = (R.m10 - R.m01) / (4 * q.w);
-        }
-        else if ((R.m00 > R.m11) & (R.m00 > R.m22))
-        {
-            float S = Mathf.Sqrt(1 + R.m00 - R.m11 - R.m22) * 2; 
-            q.w = (R.m21 - R.m12) / S;
-            q.x = 0.25f * S;
-            q.y = (R.m01 + R.m10) / S;
-            q.z = (R.m02 + R.m20) / S;
-        }
-        else if (R.m11 > R.m22)
-        {
-            float S = Mathf.Sqrt(1 + R.m11 - R.m00 - R.m22) * 2;
-            q.w = (R.m02 - R.m20) / S;
-            q.x = (R.m01 + R.m10) / S;
-            q.y = 0.25f * S;
-            q.z = (R.m12 + R.m21) / S;
-        }
-        else
-        {
-            float S = Mathf.Sqrt(1 + R.m22 - R.m00 - R.m11) * 2; // S=4*qz
-            q.w = (R.m10 - R.m01) / S;
-            q.x = (R.m02 + R.m20) / S;
-            q.y = (R.m12 + R.m21) / S;
-            q.z = 0.25f * S;
-        }
-      
+        q.w = Mathf.Sqrt(1 + R.m00 + R.m11 + R.m22) / 2;
+        q.x = (R.m21 - R.m12) / (4 * q.w);
+        q.y = (R.m02 - R.m20) / (4 * q.w);
+        q.z = (R.m10 - R.m01) / (4 * q.w);
 
 
         return q;
@@ -197,11 +168,12 @@ public class RotationInterpolation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        print("HI");
         //////////////////////////////////////////////////////////////////
         /// #5                                                         ///
         /// Implement linear interpolation of euler angles             ///
         //////////////////////////////////////////////////////////////////
-    
+
         //////////////////////////////////////////////////////////////////
         /// #6                                                         ///
         /// Calculate interpolated rotations and apply it to the cube  ///
@@ -220,13 +192,8 @@ public class RotationInterpolation : MonoBehaviour
                 interp_v = new Vector3((1 - interp) * start_EulerAngles.x + interp * end_EulerAngles.x,
                     (1 - interp) * start_EulerAngles.y + interp * end_EulerAngles.y,
                     (1 - interp) * start_EulerAngles.z + interp * end_EulerAngles.z);
+                print(interp_v);
                 transform.rotation = RotToQuat(EulerToRot(interp_v));
-
-                //to exp coord
-                interp_w = RotToExp(EulerToRot(interp_v));
-                //to quaternion
-                interp_q = RotToQuat(EulerToRot(interp_v));
-
                 break;
 
             case InterpolationMethod.ExpCoord:
@@ -237,13 +204,8 @@ public class RotationInterpolation : MonoBehaviour
                 interp_w = new Vector3((1 - interp) * w_start.x + interp * w_end.x,
                    (1 - interp) * w_start.y + interp * w_end.y,
                    (1 - interp) * w_start.z + interp * w_end.z);
+                print(interp_w);
                 transform.rotation = ExpToQuat(interp_w);
-
-                //to quaternion
-                interp_q = ExpToQuat(interp_w);
-                //to euler
-                interp_v = interp_q.eulerAngles;
-
                 break;
 
             case InterpolationMethod.Quat:
@@ -254,12 +216,6 @@ public class RotationInterpolation : MonoBehaviour
                 q_end = RotToQuat(m_end);
                 interp_q = Quaternion.Slerp(q_start, q_end, interp);
                 transform.rotation = interp_q;
-
-                //to euler
-                interp_v = interp_q.eulerAngles;
-                //to exp coord
-                interp_w = RotToExp(EulerToRot(interp_v));
-
                 break;
         }
 
@@ -268,8 +224,8 @@ public class RotationInterpolation : MonoBehaviour
         /// Visualize the rotation in euler angle, angle-axis (exp) and quaternion ///
         /// ex) TextEuler.text = "EulerAngles: (" + value + ")";                   /// 
         //////////////////////////////////////////////////////////////////////////////
-        TextEuler.text = "EulerAngles: " + interp_v;
-        TextExpCoord.text = "Exp. Coords: " + interp_w;
-        TextQuat.text = "Quaternion: "+ interp_q;
+        TextEuler.text = "EulerAngles: (" + interp_v + ")";
+        TextExpCoord.text = "Exp. Coords: (" + interp_w + ")";
+        TextQuat.text = "Quaternion: ("+ interp_q + ")";
     }
 }

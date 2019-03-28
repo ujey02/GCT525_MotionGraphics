@@ -41,8 +41,8 @@ public class BezierCurve : MonoBehaviour
         Vector3 curPos = Airplane.transform.position;
         Vector3 first_derivative = ComputeBezierTangent(parameter_t);
         Vector3 second_derivative = ComputeBezier2ndDerivative(parameter_t);
-        Vector3 B = ComputeFrenetNormal(first_derivative, second_derivative);
 
+        Vector3 B = ComputeFrenetNormal(first_derivative, second_derivative);
         Debug.DrawLine(curPos, curPos+first_derivative*20, Color.blue);
         Debug.DrawLine(curPos, curPos+second_derivative*20, Color.red);
         Debug.DrawLine(curPos, curPos+B*20, Color.green);
@@ -186,44 +186,10 @@ public class BezierCurve : MonoBehaviour
         /// #2                                                    ///
         /// copy function implemented at #2 of ComputeRotation.cs ///
         /////////////////////////////////////////////////////////////
-
-        if (R.m00 + R.m11 + R.m22 > 0)
-        {
-            q.w = Mathf.Sqrt(1 + R.m00 + R.m11 + R.m22) / 2;
-            q.x = (R.m21 - R.m12) / (4 * q.w);
-            q.y = (R.m02 - R.m20) / (4 * q.w);
-            q.z = (R.m10 - R.m01) / (4 * q.w);
-        }
-        else if ((R.m00 > R.m11) & (R.m00 > R.m22))
-        {
-            float S = Mathf.Sqrt(1 + R.m00 - R.m11 - R.m22) * 2;
-            q.w = (R.m21 - R.m12) / S;
-            q.x = 0.25f * S;
-            q.y = (R.m01 + R.m10) / S;
-            q.z = (R.m02 + R.m20) / S;
-        }
-        else if (R.m11 > R.m22)
-        {
-            float S = Mathf.Sqrt(1 + R.m11 - R.m00 - R.m22) * 2;
-            q.w = (R.m02 - R.m20) / S;
-            q.x = (R.m01 + R.m10) / S;
-            q.y = 0.25f * S;
-            q.z = (R.m12 + R.m21) / S;
-        }
-        else
-        {
-            float S = Mathf.Sqrt(1 + R.m22 - R.m00 - R.m11) * 2; // S=4*qz
-            q.w = (R.m10 - R.m01) / S;
-            q.x = (R.m02 + R.m20) / S;
-            q.y = (R.m12 + R.m21) / S;
-            q.z = 0.25f * S;
-        }
-
-
-        //q.w = Mathf.Sqrt(1 + R.m00 + R.m11 + R.m22) / 2;
-        //q.x = (R.m21 - R.m12) / (4 * q.w);
-        //q.y = (R.m02 - R.m20) / (4 * q.w);
-        //q.z = (R.m10 - R.m01) / (4 * q.w);
+        q.w = Mathf.Sqrt(1 + R.m00 + R.m11 + R.m22) / 2;
+        q.x = (R.m21 - R.m12) / (4 * q.w);
+        q.y = (R.m02 - R.m20) / (4 * q.w);
+        q.z = (R.m10 - R.m01) / (4 * q.w);
 
         return q;
     }
